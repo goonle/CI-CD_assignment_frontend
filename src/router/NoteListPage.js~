@@ -1,0 +1,28 @@
+import React, {useEffect} from 'react';
+
+const NoteList = () => {
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if(!token) {
+            window.location.href='/';
+        }
+
+        
+
+
+    }, []);
+
+    return (
+        <div>
+            <h1>Notes</h1>
+            <ul>
+                <li>note 1</li>
+                <li>note 2</li>
+                <li>note 3</li>
+            </ul>
+        </div>
+    );
+};
+
+export default NoteList;

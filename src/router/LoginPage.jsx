@@ -1,13 +1,22 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import {Form, Row, Col, Container} from 'react-bootstrap';
 import axios from 'axios';
 
-const Login = () => {
+const SERVER_URL = 'http://localhost:8000';
+
+const LoginPage = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [mode, setMode] = useState('login');
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if(!!token) {
+            window.location.href = '/noteList';
+        }
+    }, []);
 
     const handleEmailChange = (e) => {
         setUsername(e.target.value);
@@ -17,31 +26,61 @@ const Login = () => {
         setPassword(e.target.value);
     };
 
-    const handleSubmit = (e) => {
-
-
+    const handleClickLogin = (e) => {
         e.preventDefault();
-        // Handle login logic here
+
+        let data = {
+            "username": username,
+            "password": password
+        };
+
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: `${SERVER_URL}/user/login/`,
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            data: data
+        };
+        // console.log("what is wrong")
+
+        axios.request(config)
+            .then((response) => {
+                const token = response.data.token;
+                localStorage.setItem('token', token);
+            })
+            .catch((error) => {
+                localStorage.setItem('token', "");
+                console.log(error);
+            })
+            .finally(() => {
+                const token = localStorage.getItem('token');
+                !!token ? window.location.href = '/noteList' : window.location.href = '/login';
+            });
+
     };
 
     const toggleMode = () => {
         setMode(mode === 'login' ? 'register' : 'login');
+        setUsername('');
+        setPassword('');
     };
 
-    const handleRegister = () => {
+    const handleClickRegister = () => {
         // Handle registration logic here
 
         let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: 'http://localhost:8000/user/register/',
+            url: `${SERVER_URL}/user/register/`,
             headers: {},
             data: {
                 username: username,
                 password: password
             }
         };
-        console.log("config", config);
+
         axios.request(config)
             .then((response) => {
                 console.log(JSON.stringify(response.data));
@@ -63,7 +102,7 @@ const Login = () => {
                 <Card.Body>
                     <Card.Title className="text-center mb-4"
                                 style={{fontSize: "1.5rem", fontWeight: "bold"}}>Login</Card.Title>
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleClickLogin}>
                         <Form.Group as={Row} className="mb-3">
                             <Form.Label column sm="4">Username</Form.Label>
                             <Col sm="8">
@@ -110,8 +149,8 @@ const Login = () => {
                                 <div className="d-flex justify-content-center mt-4">
                                     <Button variant="outline-primary" className="w-45 mx-1" onClick={toggleMode}>Sign
                                         Up</Button>
-                                    <Button variant="primary" type="submit" className="w-45 mx-1"
-                                            onClick={handleSubmit}>Login</Button>
+                                    <Button variant="primary" className="w-45 mx-1"
+                                            type={"submit"}>Login</Button>
                                 </div>
                             )
                         }
@@ -119,7 +158,7 @@ const Login = () => {
                             mode === "register" && (
                                 <div className="d-flex justify-content-center mt-4">
                                     <Button variant="outline-primary" className="w-45 mx-1"
-                                            onClick={handleRegister}>Register</Button>
+                                            onClick={handleClickRegister}>Register</Button>
                                 </div>
                             )
                         }
@@ -130,4 +169,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default LoginPage;
