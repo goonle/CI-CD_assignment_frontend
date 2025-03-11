@@ -1,20 +1,55 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import NoteList from "../component/NoteList";
+import {Button, Container, Navbar} from "react-bootstrap";
+import SERVER_URL from "../credential/credential";
+import axios from "axios";
 
 const NoteListPage = () => {
+    const [token, setToken] = useState('');
 
     useEffect(() => {
-        const token = localStorage.getItem('token');
-        if(!token) {
-            window.location.href='/';
-        }
-
-
+        const authToken = localStorage.getItem('token');
+        !!authToken ? setToken(authToken) : window.location.href = '/';
     }, []);
+
+    const handleLogout = () => {
+
+        let config = {
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: `${SERVER_URL}/user/logout`,
+            headers: {
+                'Authorization': `Token ${token}`
+            }
+        };
+
+        axios.request(config)
+            .then((response) => {
+                console.log(JSON.stringify(response.data));
+                window.location.href = '/';
+
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+            .finally(()=>{
+                localStorage.removeItem('token');  // Remove Token
+                window.location.href = '/';  // Redirect to Login
+            });
+
+    };
+
     return (
-        <div>
-            <NoteList></NoteList>
-        </div>
+        <Container>
+            {/* Navbar with Logout Button */}
+            <Navbar className="d-flex justify-content-between mt-3">
+                <h2>My Notes</h2>
+                <Button variant="danger" onClick={handleLogout}>Logout</Button>
+            </Navbar>
+
+            {/* Note List */}
+            <NoteList/>
+        </Container>
     );
 };
 
