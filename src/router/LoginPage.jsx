@@ -3,8 +3,7 @@ import Button from 'react-bootstrap/Button';
 import Card from 'react-bootstrap/Card';
 import {Form, Row, Col, Container} from 'react-bootstrap';
 import axios from 'axios';
-
-const SERVER_URL = 'http://localhost:8000';
+import SERVER_URL from "../credential/credential";
 
 const LoginPage = () => {
     const [username, setUsername] = useState('');
@@ -26,7 +25,7 @@ const LoginPage = () => {
         setPassword(e.target.value);
     };
 
-    const handleClickLogin = (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         let data = {
@@ -43,7 +42,6 @@ const LoginPage = () => {
             },
             data: data
         };
-        // console.log("what is wrong")
 
         axios.request(config)
             .then((response) => {
@@ -102,7 +100,7 @@ const LoginPage = () => {
                 <Card.Body>
                     <Card.Title className="text-center mb-4"
                                 style={{fontSize: "1.5rem", fontWeight: "bold"}}>Login</Card.Title>
-                    <Form onSubmit={handleClickLogin}>
+                    <Form onSubmit={handleSubmit}>
                         <Form.Group as={Row} className="mb-3">
                             <Form.Label column sm="4">Username</Form.Label>
                             <Col sm="8">
