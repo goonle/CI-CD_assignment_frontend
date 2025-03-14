@@ -59,10 +59,6 @@ const NoteList = ({notes}) => {
             setShow(false);
         }
 
-        const onModifiedNote = () => {
-            getNoteList();
-        }
-
         const onDelete = (id) => {
             const token = localStorage.getItem('token');
             const config = {

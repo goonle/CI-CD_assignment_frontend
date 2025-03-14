@@ -60,25 +60,25 @@ const NoteList = ({notes}) => {
         }
 
         const onDelete = (id) => {
-            const token = localStorage.getItem('token');
-            const config = {
-                method: 'delete',
-                maxBodyLength: Infinity,
-                url: `${SERVER_URL}/note/${id}/`,
-                headers: {
-                    'Authorization': `Token ${token}`
-                }
-            };
-            if (token) {
-                axios.request(config)
-                    .then((response) => {
-                        console.log(JSON.stringify(response.data));
-                        setNoteList(noteList.filter(note => note.id !== id));
-                    })
-                    .catch((error) => {
-                        console.log(error);
-                    });
-            }
+            // const token = localStorage.getItem('token');
+            // const config = {
+            //     method: 'delete',
+            //     maxBodyLength: Infinity,
+            //     url: `${SERVER_URL}/note/${id}/`,
+            //     headers: {
+            //         'Authorization': `Token ${token}`
+            //     }
+            // };
+            // if (token) {
+            //     axios.request(config)
+            //         .then((response) => {
+            //             console.log(JSON.stringify(response.data));
+            //             setNoteList(noteList.filter(note => note.id !== id));
+            //         })
+            //         .catch((error) => {
+            //             console.log(error);
+            //         });
+            // }
         };
 
         return (
