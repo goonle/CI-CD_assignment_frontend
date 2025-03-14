@@ -48,7 +48,6 @@ const LoginPage = () => {
                 const token = response.data.token;
                 if(!token){
                     console.log("No token");
-                    return;
                 }
 
                 localStorage.setItem('token', token);
