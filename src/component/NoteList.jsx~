@@ -9,12 +9,12 @@ const categories = ["To-Do", "In Progress", "Done"];
 const NoteList = ({notes}) => {
     const [show, setShow] = useState(false);
     const clickAddNoteHandler = function () {
-        !show && setShow(true);
-        console.log("show ::", show);
+        setShow(true);
     }
     const clickCloseModalHandler = function () {
         setShow(false);
     }
+
 
     return (
         <Container className="mt-4">
@@ -39,11 +39,12 @@ const NoteList = ({notes}) => {
                     </Col>
                 ))}
             </Row>
-            {show &&
-                <NoteCreateModal
-                    clickCloseModalHandler={clickCloseModalHandler}
-                    handleSubmit = {function(){}}
-                />}
+
+            <NoteCreateModal
+                clickCloseModalHandler={clickCloseModalHandler}
+                handleSubmit={function () {
+                }}
+            />
         </Container>
     );
 };
