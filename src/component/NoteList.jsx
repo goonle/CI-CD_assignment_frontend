@@ -22,7 +22,7 @@ const NoteList = ({notes}) => {
             headers: {
                 'Authorization': `Token ${token}`
             }
-        }
+        };
 
         const getNoteList = () => {
             const getConfig = {...config, 'method': 'get'};
