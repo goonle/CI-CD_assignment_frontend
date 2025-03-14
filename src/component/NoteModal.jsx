@@ -4,17 +4,22 @@ import Button from "react-bootstrap/Button";
 import SERVER_URL from "../credential/credential";
 import axios from "axios";
 
-export default class NoteCreateModal extends React.Component {
+export default class NoteModal extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
             show: true,
-            title: "",
-            content: ""
+            note: {
+                id: !!props.note ? props.note.id : "",
+                title: !!props.note ? props.note.title : "",
+                content: !!props.note ? props.note.content : "",
+            },
+            method: !!props.note ? 'put' : 'post'
         };
-
+        console.log("this.state:", this.state);
         this.clickCloseModalHandler = this.clickCloseModalHandler.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
+        this.onChangeHandler = this.onChangeHandler.bind(this);
     }
 
     clickCloseModalHandler() {
@@ -24,14 +29,25 @@ export default class NoteCreateModal extends React.Component {
         }
     }
 
+    onChangeHandler(e) {
+        const {name, value} = e.target;
+
+        this.setState((prevState) => ({
+            note: {
+                ...prevState.note,
+                [name]: value
+            }
+        }));
+    }
+
     handleSubmit() {
-        const {title, content} = this.state;
+        const {note, method} = this.state;
+        const {title, content, id} = note;
 
         if (!title.trim() || !content.trim()) {
             alert("Please enter both title and content!");
             return;
         }
-
         // Call parent method to add note (if passed as a prop)
         if (this.props.onAddNote) {
             this.props.onAddNote({title, content});
@@ -39,14 +55,15 @@ export default class NoteCreateModal extends React.Component {
 
         const token = localStorage.getItem('token');
         const config = {
-            method: 'post',
+            method: method,
             maxBodyLength: Infinity,
-            url: `${SERVER_URL}/note/create/`,
+            url: `${SERVER_URL}/note/`,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Token ${token}`
             },
             data: {
+                note_id: id,
                 title: title,
                 content: content
             }
@@ -54,7 +71,7 @@ export default class NoteCreateModal extends React.Component {
         axios.request(config)
             .then((response) => {
                 console.log(JSON.stringify(response.data));
-
+                this.props.getNoteList();
             })
             .catch()
 
@@ -63,6 +80,8 @@ export default class NoteCreateModal extends React.Component {
     }
 
     render() {
+        const {title, content} = this.state.note;
+
         return (
             <Modal show={this.state.show} onHide={this.clickCloseModalHandler} centered>
                 <Modal.Header closeButton>
@@ -74,9 +93,10 @@ export default class NoteCreateModal extends React.Component {
                             <Form.Label>Title</Form.Label>
                             <Form.Control
                                 type="text"
+                                name="title"
                                 placeholder="Enter note title"
-                                value={this.state.title}
-                                onChange={(e) => this.setState({title: e.target.value})}
+                                value={title}
+                                onChange={this.onChangeHandler}
                                 required
                             />
                         </Form.Group>
@@ -85,9 +105,10 @@ export default class NoteCreateModal extends React.Component {
                             <Form.Control
                                 as="textarea"
                                 rows={6}
+                                name="content"
                                 placeholder="Enter note content"
-                                value={this.state.content}
-                                onChange={(e) => this.setState({content: e.target.value})}
+                                value={content}
+                                onChange={this.onChangeHandler}
                                 style={{resize: "none"}}
                                 required
                             />
