@@ -12,7 +12,7 @@ const LoginPage = () => {
 
     useEffect(() => {
         const token = localStorage.getItem('token');
-        if (!!token) {
+        if(!!token) {
             window.location.href = '/noteList';
         }
     }, []);
@@ -34,10 +34,9 @@ const LoginPage = () => {
         };
 
         let config = {
-            method: 'post',
+            method: 'options',
             maxBodyLength: Infinity,
             url: `${SERVER_URL}/user/login/`,
-            credentials: "include",
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -47,7 +46,7 @@ const LoginPage = () => {
         axios.request(config)
             .then((response) => {
                 const token = response.data.token;
-                if (!token) {
+                if(!token){
                     console.log("No token");
                     return;
                 }
@@ -75,10 +74,7 @@ const LoginPage = () => {
             method: 'post',
             maxBodyLength: Infinity,
             url: `${SERVER_URL}/user/register/`,
-            credentials: "include",
-            headers: {
-                   'Content-Type': 'application/json'
-            },
+            headers: {},
             data: {
                 username: username,
                 password: password
